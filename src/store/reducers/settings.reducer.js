@@ -12,20 +12,14 @@ const settingsReducer = function (state = initialState, action) {
         {
             return {
                 ...state,
-                layout: {
-                    ...state.layout,
-                    loading: action.payload.loading
-                }
+                loading: action.payload.loading
             };
         }
         case Actions.SET_MESSAGE:
         {
             return {
                 ...state,
-                layout: {
-                    ...state.layout,
-                    message: action.payload
-                }
+                message: action.payload
             };
         }
         default:

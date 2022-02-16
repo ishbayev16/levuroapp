@@ -1,17 +1,80 @@
 import React, {useEffect, useState} from 'react';
-import {  Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import {useDispatch, useSelector} from 'react-redux';
+import Loading from "../../components/Loading";
+import {API_URL, ERROR_MESSAGE, LOGIN, SUCCESS_MESSAGE, WARNING_MESSAGE} from "../../consts/Consts";
+import Message from "../../components/Message";
+import {setLoading, setMessage} from "../../store/actions";
+
 
 function Login(props){
 
+    const {message,loading} = useSelector(state => state.settingsReducer);
+    const dispatch = useDispatch();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const navigate = useNavigate();
 
     const handleLogin = () =>{
-        console.log("name", email, password)
+
+        if(!email || !password){
+            return(
+                dispatch(setMessage("Email or Password can not be empty",WARNING_MESSAGE))
+            )
+        }
+
+        let data = JSON.stringify({
+            "email": email,
+            "password": password
+        });
+
+        let config = {
+            method: 'post',
+            url: API_URL + LOGIN,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data : data
+        };
+
+        dispatch(setLoading(true));
+        axios(config)
+            .then(function (response) {
+                if(response.status === 200){
+                    console.log("if")
+                    localStorage.setItem("lev_token", response.data.token);
+                    navigate("/users");
+                    dispatch(setMessage("login successful",SUCCESS_MESSAGE))
+                }else{
+                    console.log("else")
+                    dispatch(setMessage("user not found", ERROR_MESSAGE))
+                }
+                dispatch(setLoading(false));
+            })
+            .catch(function (error) {
+                console.log("else err", error)
+                dispatch(setMessage("user not found", ERROR_MESSAGE))
+                dispatch(setLoading(false))
+            });
+
+    }
+
+    if(loading){
+        return (
+            <Loading />
+        )
     }
 
     return(
         <div className="container mt-5">
+
+            {
+                message && message.text && (
+                    <Message/>
+                )
+            }
+
             <div className="row d-flex justify-content-center">
                 <div className="col-md-6">
                     <div className="card px-5 py-5">
@@ -19,7 +82,6 @@ function Login(props){
                             <div className="forms-inputs mb-4">
                                 <input
                                     className="w-50"
-                                    autoComplete="off"
                                     type="text"
                                     value={email}
                                     onChange={(event) => setEmail(event.target.value)}
@@ -28,7 +90,6 @@ function Login(props){
                             </div>
                             <div className="forms-inputs mb-4">
                                 <input className="w-50"
-                                       autoComplete="off"
                                        value={password}
                                        onChange={(e)=>setPassword(e.target.value)}
                                        type="password"
