@@ -16,6 +16,12 @@ function Login(props){
     const [password, setPassword] = useState("")
     const navigate = useNavigate();
 
+    useEffect(()=>{
+        if(localStorage.getItem("lev_token")){
+            navigate("/users")
+        }
+    },[])
+
     const handleLogin = () =>{
 
         if(!email || !password){
