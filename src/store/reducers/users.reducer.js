@@ -1,8 +1,7 @@
 import * as Actions from "../actions/users.actions";
-import {FETCH_USERS_LIST_ERROR, FETCH_USERS_LIST_SUCCESS} from "../actions/users.actions";
 
 const initialState = {
-    response: null,
+    response: {data: []},
     error: false
 };
 
@@ -13,9 +12,14 @@ const usersReducer = function (state = initialState, action) {
         {
             return {
                 ...state,
-                response: action.payload.data,
+                response: {
+                    ...action.payload.response,
+                    data: [...state?.response?.data, ...action.payload.response.data]
+                },
+                // response: action.payload.response,
                 error: false,
             };
+
         }
         case Actions.FETCH_USERS_LIST_ERROR:
         {
