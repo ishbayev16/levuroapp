@@ -4,19 +4,22 @@ import {getUsers} from "../../store/actions/users.actions";
 import {useNavigate} from "react-router-dom";
 import {setLoading} from "../../store/actions";
 import UserCart from "./components/UserCart";
+import Loading from "../../components/Loading";
+
+
+
+
 function UsersList(props){
 
     const {message,loading} = useSelector(state => state.settingsReducer);
     const {response, error} = useSelector(state => state.usersReducer);
 
-    const navigate = useNavigate
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const listInnerRef = useRef();
 
     const [searchText, setSearchText] = useState("");
     const [searchResults, setSearchResults] = useState(null);
-
-
 
 
     useEffect(()=>{
@@ -81,11 +84,13 @@ function UsersList(props){
                 <button className="btn btn-dark w-100" onClick={handleLogOut}>Logout</button>
             </div>
 
+            {loading ? <span className="position-absolute"><Loading /></span>  : null}
+
 
             <div className=" w-75 h-75">
                 <div className="h-25">
                     <div className="d-flex justify-content-start top-0 start-0 mt-4 ms-4">
-                        <button className="btn btn-dark w-25" onClick={handleLogOut}>Add New User</button>
+                        <button className="btn btn-dark w-25" onClick={()=>navigate("/users/new")}>Add New User</button>
                     </div>
                     <div className="mt-4 ms-4 d-flex justify-content-start">
                         <input className="w-50 me-4 rounded-1" type="text" placeholder="search" value={searchText} onChange={(e) => setSearchText(e.target.value)}/>

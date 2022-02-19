@@ -1,7 +1,10 @@
 import * as Actions from "../actions/users.actions";
+import {SET_EMPTY_USER} from "../actions/users.actions";
 
 const initialState = {
     response: {data: []},
+    singleUser: null,
+    singleUserError: null,
     error: false
 };
 
@@ -16,10 +19,8 @@ const usersReducer = function (state = initialState, action) {
                     ...action.payload.response,
                     data: [...state?.response?.data, ...action.payload.response.data]
                 },
-                // response: action.payload.response,
                 error: false,
             };
-
         }
         case Actions.FETCH_USERS_LIST_ERROR:
         {
@@ -27,6 +28,30 @@ const usersReducer = function (state = initialState, action) {
                 ...state,
                 response: null,
                 error: true
+            };
+        }
+        case Actions.FETCH_USER_SUCCESS:
+        {
+            return {
+                ...state,
+                singleUser: action.payload.response,
+                singleUserError: true
+            };
+        }
+        case Actions.FETCH_USER_ERROR:
+        {
+            return {
+                ...state,
+                singleUser: null,
+                singleUserError: true
+            };
+        }
+        case Actions.SET_EMPTY_USER:
+        {
+            return {
+                ...state,
+                singleUser: action.payload,
+                singleUserError: false
             };
         }
         default:
