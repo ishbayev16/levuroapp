@@ -1,5 +1,6 @@
 import React from 'react';
 import { useFormik } from 'formik';
+import {editUser} from "../../../store/actions/users.actions";
 
 const validate = values => {
     const errors = {};
@@ -25,16 +26,17 @@ const validate = values => {
     return errors;
 };
 
-const EditForm = ({localUser}) => {
+const EditForm = ({localUser, navigate, dispatch}) => {
     const formik = useFormik({
         initialValues: {
-            first_name: localUser?.first_name,
-            last_name: localUser?.last_name,
-            email: localUser?.email,
+            id: localUser?.id,
+            first_name: localUser?.first_name ? localUser?.first_name : "",
+            last_name: localUser?.last_name ? localUser?.last_name : "",
+            email: localUser?.email ? localUser?.email : "",
         },
         validate,
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
+            dispatch(editUser(values, navigate))
         },
     });
     return (
@@ -47,7 +49,7 @@ const EditForm = ({localUser}) => {
                 type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.first_name}
+                value={formik?.values?.first_name}
             />
             {formik.touched.first_name && formik.errors.first_name ? (
                 <div className="text-danger">{formik.errors.first_name}</div>
@@ -60,7 +62,7 @@ const EditForm = ({localUser}) => {
                 type="text"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.last_name}
+                value={formik?.values?.last_name}
             />
             {formik.touched.last_name && formik.errors.last_name ? (
                 <div className="text-danger">{formik.errors.last_name}</div>
@@ -73,13 +75,13 @@ const EditForm = ({localUser}) => {
                 type="email"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                value={formik.values.email}
+                value={formik?.values?.email}
             />
             {formik.touched.email && formik.errors.email ? (
                 <div className="text-danger">{formik.errors.email}</div>
             ) : null}
 
-            <button type="submit" className="mt-4">Submit</button>
+            <button type="submit" className="mt-4">{localUser && localUser.id ? "UPDATE USER" : "ADD NEW USER"}</button>
         </form>
     );
 };

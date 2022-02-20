@@ -1,5 +1,6 @@
 import axios from "axios";
-import {API_URL, ERROR_MESSAGE, get_token, USERS} from "../../consts/Consts";
+import React from "react";
+import {API_URL, ERROR_MESSAGE, get_token, SUCCESS_MESSAGE, USERS} from "../../consts/Consts";
 import {setLoading, setMessage} from "./settings.actions";
 
 
@@ -102,3 +103,55 @@ export const setEmptyUser = () => ({
         email: ""
     }
 });
+
+export function editUser(user, navigate){
+    let data = JSON.stringify(user);
+    let config;
+
+    if(user && user.id){
+        config = {
+            method: 'patch',
+            url: API_URL + USERS +"/" + user.id,
+            headers: {
+                'Authorization': 'Bearer ' + get_token(),
+                'Content-Type': 'application/json'
+            },
+            data : data
+        };
+    }else{
+        config = {
+            method: 'post',
+            url: API_URL + USERS,
+            headers: {
+                'Authorization': 'Bearer ' + get_token(),
+                'Content-Type': 'application/json'
+            },
+            data : data
+        };
+    }
+
+    const request = axios(config);
+    return dispatch => {
+        dispatch(setLoading(true));
+        request
+            .then(response => {
+                if(Math.floor(response.status / 100) === 2 ){
+                    if(user && user.id){
+                        dispatch(setMessage("User updated successfully", SUCCESS_MESSAGE))
+                        navigate(-1);
+                    }else{
+                        dispatch(setMessage("User created successfully", SUCCESS_MESSAGE))
+                        navigate(-1);
+                    }
+                }else{
+                    dispatch(setMessage("Something went wrong", ERROR_MESSAGE));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch(error => {
+                dispatch(setLoading(false))
+                dispatch(setMessage("Something went wrong", ERROR_MESSAGE));
+            })
+    }
+}
+

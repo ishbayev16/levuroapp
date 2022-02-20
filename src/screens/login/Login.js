@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import {useDispatch, useSelector} from 'react-redux';
-import Loading from "../../components/Loading";
+import {useDispatch} from 'react-redux';
 import {API_URL, ERROR_MESSAGE, LOGIN, SUCCESS_MESSAGE, WARNING_MESSAGE} from "../../consts/Consts";
-import Message from "../../components/Message";
 import {setLoading, setMessage} from "../../store/actions";
 
 
 function Login(props){
 
-    const {message,loading} = useSelector(state => state.settingsReducer);
     const dispatch = useDispatch();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -48,38 +45,24 @@ function Login(props){
         axios(config)
             .then(function (response) {
                 if(response.status === 200){
-                    console.log("if")
                     localStorage.setItem("lev_token", response.data.token);
                     navigate("/users");
                     dispatch(setMessage("login successful",SUCCESS_MESSAGE))
                 }else{
-                    console.log("else")
-                    dispatch(setMessage("user not found", ERROR_MESSAGE))
+                    (setMessage("user not found", ERROR_MESSAGE))
                 }
                 dispatch(setLoading(false));
             })
             .catch(function (error) {
-                console.log("else err", error)
                 dispatch(setMessage("user not found", ERROR_MESSAGE))
                 dispatch(setLoading(false))
             });
 
     }
 
-    if(loading){
-        return (
-            <Loading />
-        )
-    }
-
     return(
         <div className="container mt-5">
 
-            {
-                message && message.text && (
-                    <Message/>
-                )
-            }
 
             <div className="row d-flex justify-content-center">
                 <div className="col-md-6">

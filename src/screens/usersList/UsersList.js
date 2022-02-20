@@ -2,16 +2,11 @@ import React, {useEffect, useState, useRef} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {getUsers} from "../../store/actions/users.actions";
 import {useNavigate} from "react-router-dom";
-import {setLoading} from "../../store/actions";
 import UserCart from "./components/UserCart";
-import Loading from "../../components/Loading";
-
-
 
 
 function UsersList(props){
 
-    const {message,loading} = useSelector(state => state.settingsReducer);
     const {response, error} = useSelector(state => state.usersReducer);
 
     const navigate = useNavigate();
@@ -27,15 +22,6 @@ function UsersList(props){
             dispatch(getUsers())
         }
     },[]);
-
-    const handleLogOut = () =>{
-        dispatch(setLoading(true));
-        localStorage.removeItem("lev_token");
-        setTimeout(()=>{
-            dispatch(setLoading(false));
-            navigate("/")
-        },400)
-    }
 
 
     const onScroll = () => {
@@ -66,7 +52,6 @@ function UsersList(props){
     }
 
     const handleSearch = () =>{
-        console.log("res", arraySearch(response.data, searchText))
         if(searchText){
             setSearchResults(arraySearch(response.data, searchText))
         }else{
@@ -74,20 +59,11 @@ function UsersList(props){
         }
     }
 
-    // useEffect(()=>{
-    //     handleSearch()
-    // },[searchText])
 
     return(
-        <div className="position-absolute d-flex justify-content-center align-items-center h-100 w-100">
-            <div className="position-absolute top-0 end-0 mt-4 me-4">
-                <button className="btn btn-dark w-100" onClick={handleLogOut}>Logout</button>
-            </div>
+        <div className=" d-flex justify-content-center align-items-center h-75 w-100">
 
-            {loading ? <span className="position-absolute"><Loading /></span>  : null}
-
-
-            <div className=" w-75 h-75">
+            <div className=" w-75 h-100">
                 <div className="h-25">
                     <div className="d-flex justify-content-start top-0 start-0 mt-4 ms-4">
                         <button className="btn btn-dark w-25" onClick={()=>navigate("/users/new")}>Add New User</button>
@@ -98,7 +74,7 @@ function UsersList(props){
                     </div>
                 </div>
 
-                <div className="ms-4 w-75 h-75 overflow-auto scrollbar scrollbar-secondary"  ref={listInnerRef} onScroll={onScroll}>
+                <div className=" h-75 overflow-auto scrollbar scrollbar-secondary"  ref={listInnerRef} onScroll={onScroll}>
 
                     {searchResults && searchResults.length && searchResults.length > 0 ? searchResults.map(user =>{
                             return (
@@ -115,7 +91,6 @@ function UsersList(props){
                     }
 
                 </div>
-
 
             </div>
 
