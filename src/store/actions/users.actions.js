@@ -1,5 +1,4 @@
 import axios from "axios";
-import React from "react";
 import {API_URL, ERROR_MESSAGE, get_token, SUCCESS_MESSAGE, USERS} from "../../consts/Consts";
 import {setLoading, setMessage} from "./settings.actions";
 

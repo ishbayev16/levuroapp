@@ -1,5 +1,4 @@
 import * as Actions from "../actions/users.actions";
-import {SET_EMPTY_USER} from "../actions/users.actions";
 
 const initialState = {
     response: {data: []},

@@ -7,7 +7,7 @@ import UserCart from "./components/UserCart";
 
 function UsersList(props){
 
-    const {response, error} = useSelector(state => state.usersReducer);
+    const {response} = useSelector(state => state.usersReducer);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -22,6 +22,7 @@ function UsersList(props){
             dispatch(getUsers())
         }
     },[]);
+
 
 
     const onScroll = () => {
